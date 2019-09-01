@@ -1,23 +1,24 @@
 import React from 'react';
-import logo from '../../logo.svg';
 import '../../App.css';
+import { Helmet } from "react-helmet";
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import HomePage from "../HomePage";
 
 function App() {
   return (
     <div className="App">
+      <Helmet
+          titleTemplate="%s - My DashBoad"
+          defaultTitle="My DashBoard"
+      >
+        <meta name="description" content="A React.js application for Ercom technicl task" />
+      </Helmet>
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <BrowserRouter>
+          <Switch>
+              <Route exact path="/" component={HomePage} />
+          </Switch>
+        </BrowserRouter>
       </header>
     </div>
   );
