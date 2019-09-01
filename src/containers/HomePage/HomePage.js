@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getInfosFromJSON } from "./store/actions/home.action";
 
+import MainChart  from '../../components/MainChart';
+
 class HomePage extends React.Component {
 
   componentDidMount() {
@@ -11,10 +13,10 @@ class HomePage extends React.Component {
 
   render() {
     const {metricsFile} = this.props;
-    console.log("metricsFile: ", metricsFile);
+    console.log("metricsFile: ", metricsFile[0]);
     return (
       <div>
-        <p>oko</p>
+        <MainChart />
       </div>
     );
   }
@@ -22,7 +24,7 @@ class HomePage extends React.Component {
 
 function mapStateToProps(state) {
   return {
-      metricsFile: state.metricsReducer
+      metricsFile: state.metricsReducer.metricsFile
   };
 }
 
