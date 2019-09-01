@@ -12,8 +12,10 @@ class MainChart extends React.Component {
     super(props);
 
     this.state = {
+      keyDateResult: null,
       fromResult: '',
       toResult: '',
+      currentVariable: '',
       options: {
         chart: {
           id: "basic-bar"
@@ -31,29 +33,37 @@ class MainChart extends React.Component {
     };
   }
 
-  receiveCallbackFrom(date) {
-      this.setState({ fromResult: date })
+  receiveCallbackFrom(key) {
+      this.setState({ keyDateResult: key });
   };
 
   receiveCallbackTo(date) {
     this.setState({ toResult: date })
   }
 
+  receiveCallbackVariable(variable) {
+    this.setState( {  currentVariable: variable} )
+  }
+
   render() {
     const { metricsFile } = this.props;
-    console.log("metric in render", metricsFile);
+    const { keyDateResult } = this.state;
     return (
       <div>
         <div className="flex-row">
-          <VariableDropDown />
+          <VariableDropDown
+            callback={this.receiveCallbackVariable.bind(this)}
+          />
           <ButtonGroup>
             <DateDropDown
               select={"from"}
-              callback={() => this.receiveCallbackFrom}
+              value={keyDateResult}
+              callback={this.receiveCallbackFrom.bind(this)}
             />
             <DateDropDown
               select={"to"}
-              callback={() => this.receiveCallbackTo}
+              value={keyDateResult}
+              callback={this.receiveCallbackTo.bind(this)}
             />
           </ButtonGroup>
         </div>

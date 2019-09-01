@@ -11,6 +11,7 @@ class DateDropDown extends React.Component {
     this.state = {
       open: false,
       selectDate: '',
+      keyDate: null,
     }
   }
 
@@ -20,21 +21,28 @@ class DateDropDown extends React.Component {
     }));
   }
 
-  onChange(e) {
+  onChange(e, key) {
     const { callback } = this.props;
-    this.setState({ selectDate: e.currentTarget.textContent }, () => {
-      callback(this.state.selectDate)
+    this.setState({ selectDate: e.currentTarget.textContent, keyDate: key }, () => {
+      callback(this.state.keyDate)
     });
   }
 
 
   render() {
-    const { metricsFile, select} = this.props;
+    const { metricsFile, select, value} = this.props;
     const { selectDate } = this.state;
-    console.log("mectricsFile Drop", metricsFile);
-    console.log("select", select);
+    let temp = [];
+    const specificId = !value && select === 'to' ? 0 : value;
+    console.log("specific", specificId);
+    if (specificId !== 0 && select === 'to') {
+      temp = metricsFile.slice(specificId);
+      console.log("temp", temp)
+    }
+    console.log("value", value);
+    console.log("selectDate", selectDate);
     return (
-      <Dropdown isOpen={this.state.open} toggle={this.toggle} className="ml-10">
+      <Dropdown isOpen={!value && select === 'to' ? false : this.state.open} toggle={this.toggle} className="ml-10">
         <DropdownToggle caret>
           {selectDate === '' ? "select date " + select + " ..." : selectDate}
         </DropdownToggle>
@@ -54,10 +62,11 @@ class DateDropDown extends React.Component {
             },
           },
         }}>
-          {metricsFile.map( (metrics) => (
-            <DropdownItem onClick={(e) => this.onChange(e)}>{metrics.time}</DropdownItem>
-          ))}
-          <DropdownItem header>Header</DropdownItem>
+          {select === 'from' ? metricsFile.map( (metrics, key) => (
+            <DropdownItem onClick={(e) => this.onChange(e, key)}>{metrics.time}</DropdownItem>
+          )) : temp.map( (metrics, key) => (
+            <DropdownItem onClick={(e) => this.onChange(e, key)}>{metrics.time}</DropdownItem>
+          )) }
         </DropdownMenu>
       </Dropdown>
     );
@@ -72,7 +81,8 @@ function mapStateToProps(state) {
 
 DateDropDown.propTypes = {
   select: PropTypes.string,
-  callback: PropTypes.func
+  value: PropTypes.string,
+  callback: PropTypes.func,
 };
 
 export default connect(mapStateToProps, null)(DateDropDown);
