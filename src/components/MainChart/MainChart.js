@@ -16,19 +16,32 @@ class MainChart extends React.Component {
       fromResult: '',
       toResult: '',
       currentVariable: '',
+
+      tempVariableData: [],
+
+      // Chart
       options: {
         chart: {
           id: "basic-bar"
         },
         xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+          categories: [261951488, 261136384, 267026432, 264118272, 261627904, 265289728, 256368640, 261992448, 258969600, 264736768, 261332992, 259375104, 257339392, 264241152, 261734400, 258854912, 265363456, 262742016, 261017600, 272863232, 267821056, 275456000]
+        },
+        dataLabels: {
+          style: {
+            colors: ['#F44336', '#E91E63', '#9C27B0']
+          }
         }
       },
       series: [
         {
           name: "series-1",
-          data: [30, 40, 45, 50, 49, 60, 70, 91,30, 40, 45, 50, 49, 60, 70, 91]
-        }
+          data: [30, 40, 45, 50, 49, 60, 170, 391, 530, 340, 45, 50, 49, 60, 70, 91]
+        },
+        // {
+        //   name: "series-2",
+        //   data: [30, 40, 45, 50, 49, 60, 170, 391, 530, 340, 45, 50, 49, 60, 70, 91]
+        // }
       ]
     };
   }
@@ -41,8 +54,40 @@ class MainChart extends React.Component {
     this.setState({ toResult: date })
   }
 
+  static parseTable(oldTab) {
+
+    let newTab = [];
+    const maxVal = 20;
+    const delta = Math.floor(oldTab.length / maxVal);
+
+    for (let i = 0; i < oldTab.length; i += delta) {
+      newTab.push(oldTab[i]);
+    }
+
+    return newTab;
+  }
+
   receiveCallbackVariable(variable) {
-    this.setState( {  currentVariable: variable} )
+    let test = variable;
+    this.setState( { currentVariable: variable }, (variable) => {
+      let temp = [];
+      this.props.metricsFile.map( (metrics, key) => {
+        temp.push(metrics[test]);
+      });
+      this.setState({ tempVariableData: temp }, () => {
+        const { tempVariableData } = this.state;
+        if (tempVariableData.length > 20) {
+          let newTab = MainChart.parseTable(tempVariableData);
+          let newSeries = JSON.parse(JSON.stringify(this.state.series));
+          newSeries[0].data = newTab;
+          this.setState({
+            series: newSeries
+          }, () => {
+            console.log("data", this.state.series);
+          })
+        }
+      })
+    })
   }
 
   render() {
@@ -50,23 +95,21 @@ class MainChart extends React.Component {
     const { keyDateResult } = this.state;
     return (
       <div>
-        <div className="flex-row">
-          <VariableDropDown
-            callback={this.receiveCallbackVariable.bind(this)}
+        <VariableDropDown
+          callback={this.receiveCallbackVariable.bind(this)}
+        />
+        <ButtonGroup>
+          <DateDropDown
+            select={"from"}
+            value={keyDateResult}
+            callback={this.receiveCallbackFrom.bind(this)}
           />
-          <ButtonGroup>
-            <DateDropDown
-              select={"from"}
-              value={keyDateResult}
-              callback={this.receiveCallbackFrom.bind(this)}
-            />
-            <DateDropDown
-              select={"to"}
-              value={keyDateResult}
-              callback={this.receiveCallbackTo.bind(this)}
-            />
-          </ButtonGroup>
-        </div>
+          <DateDropDown
+            select={"to"}
+            value={keyDateResult}
+            callback={this.receiveCallbackTo.bind(this)}
+          />
+        </ButtonGroup>
         <Chart
           options={this.state.options}
           series={this.state.series}

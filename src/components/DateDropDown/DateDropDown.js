@@ -36,7 +36,7 @@ class DateDropDown extends React.Component {
     const specificId = !value && select === 'to' ? 0 : value;
     console.log("specific", specificId);
     if (specificId !== 0 && select === 'to') {
-      temp = metricsFile.slice(specificId);
+      temp = metricsFile.slice(specificId + 1);
       console.log("temp", temp)
     }
     console.log("value", value);
