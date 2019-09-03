@@ -1,5 +1,33 @@
 
+/*MainChart*/
+.main-div {
+    display: flex;
+    flex-direction: row;
+}
+
 .row-div {
     display: flex;
     flex-direction: row;
+    align-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 5%;
+    padding-left: 10%;
+    padding-right: 5%;
+}
+
+.chart-div {
+    padding: 5%;
+}
+
+/*AverageValues*/
+.column-div {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 5%;
+    padding-left: 10%;
+    padding-right: 5%;
 }

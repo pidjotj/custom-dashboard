@@ -5,6 +5,7 @@ import Chart from "react-apexcharts";
 import { ButtonGroup, CarouselItem } from "reactstrap";
 import DateDropDown from "../DateDropDown";
 import VariableDropDown from "../VariableDropDown";
+import AverageValues from "../AverageValues";
 
 const items = [
   {
@@ -32,8 +33,8 @@ class MainChart extends React.Component {
       keyDateResultEnd: -1,
       toResult: '',
       currentVariable: '',
-
       tempVariableData: [],
+      averageTab: [],
 
       // Chart
       options: {
@@ -108,6 +109,8 @@ class MainChart extends React.Component {
             newSeries[0].name = currentVariable;
             this.setState({
               series: newSeries
+            }, () => {
+              this.getValues(newTab)
             })
           }
           let newFullDate = MainChart.parseTable(fullDate, key, keyDateResultEnd);
@@ -138,6 +141,8 @@ class MainChart extends React.Component {
         newSeries[0].name = currentVariable;
         this.setState({
           series: newSeries
+        }, () => {
+          this.getValues(newTab)
         })
       }
       let newFullDate = MainChart.parseTable(fullDate, keyDateResult, key);
@@ -149,6 +154,53 @@ class MainChart extends React.Component {
         }
       )
     })
+  }
+
+  receiveCallbackVariable(variable) {
+    let nameVar = variable;
+    const { metricsFile } = this.props;
+    this.setState( { currentVariable: variable }, (variable) => {
+      let temp = [];
+      metricsFile.map( (metrics) => {
+        temp.push(metrics[nameVar]);
+      });
+      this.getValues(temp);
+      this.setState({ tempVariableData: temp }, () => {
+        const { tempVariableData, keyDateResult, keyDateResultEnd } = this.state;
+        let newTab = MainChart.parseTable(tempVariableData, keyDateResult, keyDateResultEnd);
+        let newSeries = JSON.parse(JSON.stringify(this.state.series));
+        newSeries[0].data = newTab;
+        newSeries[0].name = nameVar;
+        this.setState({
+          series: newSeries
+        }, () => {
+          const fullDate = [];
+          metricsFile.map( (metrics) => {
+            fullDate.push(metrics.time);
+          });
+          let newFullDate = MainChart.parseTable(fullDate, keyDateResult, keyDateResultEnd);
+          let newCategories = JSON.parse(JSON.stringify(this.state.options));
+          newCategories.xaxis.categories = newFullDate;
+          this.setState({
+              options: newCategories
+            }
+          )
+        })
+      })
+    })
+  }
+
+  getValues(tab) {
+    const { currentVariable } = this.state;
+    let result = [];
+
+    console.log(" ~~ currentVariable", currentVariable);
+    result.push(Math.max.apply(Math, tab));
+    result.push(Math.min.apply(Math, tab));
+    const average = (result[0] + result[1]) / 2;
+    result.push(average);
+    console.log("result", result);
+    this.setState({ averageTab: result });
   }
 
   static parseTable(oldTab, keyFrom, keyTo = null) {
@@ -182,42 +234,17 @@ class MainChart extends React.Component {
     return oldTabTemp;
   }
 
-  receiveCallbackVariable(variable) {
-    let nameVar = variable;
-    const { metricsFile } = this.props;
-    this.setState( { currentVariable: variable }, (variable) => {
-      let temp = [];
-      metricsFile.map( (metrics) => {
-        temp.push(metrics[nameVar]);
-      });
-      this.setState({ tempVariableData: temp }, () => {
-        const { tempVariableData, keyDateResult, keyDateResultEnd } = this.state;
-        let newTab = MainChart.parseTable(tempVariableData, keyDateResult, keyDateResultEnd);
-        let newSeries = JSON.parse(JSON.stringify(this.state.series));
-        newSeries[0].data = newTab;
-        newSeries[0].name = nameVar;
-        this.setState({
-          series: newSeries
-        }, () => {
-          const fullDate = [];
-          metricsFile.map( (metrics) => {
-            fullDate.push(metrics.time);
-          });
-          let newFullDate = MainChart.parseTable(fullDate, keyDateResult, keyDateResultEnd);
-          let newCategories = JSON.parse(JSON.stringify(this.state.options));
-          newCategories.xaxis.categories = newFullDate;
-          this.setState({
-              options: newCategories
-            }
-          )
-        })
-      })
-    })
-  }
 
   render() {
     const { metricsFile } = this.props;
-    const { keyDateResult, keyDateResultEnd, activeIndex, options, series } = this.state;
+    const {
+      keyDateResult,
+      keyDateResultEnd,
+      activeIndex,
+      options,
+      series,
+      averageTab,
+    } = this.state;
 
     const slides = items.map((item) => {
       return (
@@ -238,30 +265,38 @@ class MainChart extends React.Component {
       );
     });
 
-    return (
-      <div className="row-div">
-        <VariableDropDown
-          callback={this.receiveCallbackVariable.bind(this)}
-        />
-        <ButtonGroup>
-          <DateDropDown
-            select={"from"}
-            value={keyDateResult}
-            callback={this.receiveCallbackFrom.bind(this)}
-          />
-          <DateDropDown
-            select={"to"}
-            value={keyDateResult}
-            callback={this.receiveCallbackTo.bind(this)}
-          />
-        </ButtonGroup>
-        <Chart
-          options={options}
-          series={series}
-          type="line"
-          width="900"
-        />
 
+
+    return (
+      <div className="main-div">
+        <AverageValues tab={averageTab}/>
+        <div>
+            <div className="row-div">
+              <VariableDropDown
+                callback={this.receiveCallbackVariable.bind(this)}
+              />
+              <ButtonGroup>
+                <DateDropDown
+                  select={"from"}
+                  value={keyDateResult}
+                  callback={this.receiveCallbackFrom.bind(this)}
+                />
+                <DateDropDown
+                  select={"to"}
+                  value={keyDateResult}
+                  callback={this.receiveCallbackTo.bind(this)}
+                />
+              </ButtonGroup>
+            </div>
+          <div className="chart-div">
+            <Chart
+              options={options}
+              series={series}
+              type="line"
+              width="900"
+            />
+          </div>
+        </div>
         {/*<Carousel*/}
         {/*  interval={false}*/}
         {/*  activeIndex={activeIndex}*/}
