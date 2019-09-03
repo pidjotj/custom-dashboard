@@ -1,15 +1,8 @@
 import React from "react";
-import '../../styles/index.css'
-import { connect } from 'react-redux';
+import "../../styles/index.css";
+import { connect } from "react-redux";
 import Chart from "react-apexcharts";
-import {
-  ButtonGroup,
-  Carousel,
-  CarouselItem,
-  CarouselControl,
-  CarouselIndicators,
-  CarouselCaption
-} from 'reactstrap';
+import { ButtonGroup, Carousel, CarouselControl, CarouselIndicators, CarouselItem } from "reactstrap";
 import DateDropDown from "../DateDropDown";
 import VariableDropDown from "../VariableDropDown";
 
@@ -36,7 +29,7 @@ class MainChart extends React.Component {
     this.state = {
       activeIndex: 0,
       keyDateResult: null,
-      fromResult: '',
+      keyDateResultEnd: null,
       toResult: '',
       currentVariable: '',
 
@@ -65,10 +58,6 @@ class MainChart extends React.Component {
           name: "series-1",
           data: [30, 40, 45, 50, 49, 60, 170, 391, 530, 340, 45, 50, 49, 60, 70, 91]
         },
-        // {
-        //   name: "series-2",
-        //   data: [30, 40, 45, 50, 49, 60, 170, 391, 530, 340, 45, 50, 49, 60, 70, 91]
-        // }
       ],
     };
   }
@@ -105,28 +94,44 @@ class MainChart extends React.Component {
       this.setState({ keyDateResult: key });
   };
 
-  receiveCallbackTo(date) {
-    this.setState({ toResult: date })
+  receiveCallbackTo(key) {
+    this.setState({ keyDateResultEnd: key })
   }
 
-  static parseTable(oldTab) {
+  static parseTable(oldTab, keyFrom, keyTo = null) {
 
-    let newTab = [];
-    const maxVal = 20;
-    const delta = Math.floor(oldTab.length / maxVal);
+    let oldTabTemp = [];
 
-    for (let i = 0; i < oldTab.length; i += delta) {
-      newTab.push(oldTab[i]);
+    if (keyFrom && !keyTo) {
+      oldTabTemp = oldTab.slice(keyFrom);
+    } else if (keyFrom && keyTo) {
+      // Have to add 2 because of the table modification in Dropdown.
+      oldTabTemp = oldTab.slice(keyFrom, keyTo + keyFrom + 2);
+    } else {
+      oldTabTemp = oldTab;
     }
 
-    return newTab;
+    let newTab = [];
+
+    if (oldTabTemp.length > 20) {
+      const maxVal = 20;
+      const delta = Math.floor(oldTabTemp.length / maxVal);
+
+      for (let i = 0; i < oldTabTemp.length; i += delta) {
+        newTab.push(oldTabTemp[i]);
+      }
+      return newTab;
+    }
+
+    return oldTabTemp;
   }
 
   receiveCallbackVariable(variable) {
     let test = variable;
+    const { metricsFile } = this.props;
     this.setState( { currentVariable: variable }, (variable) => {
       let temp = [];
-      this.props.metricsFile.map( (metrics, key) => {
+      metricsFile.map( (metrics) => {
         temp.push(metrics[test]);
       });
       this.setState({ tempVariableData: temp }, () => {
@@ -139,7 +144,47 @@ class MainChart extends React.Component {
           this.setState({
             series: newSeries
           }, () => {
-            console.log("data", this.state.series);
+            const { keyDateResult, keyDateResultEnd } = this.state;
+            if (!keyDateResult) {
+              // TODO prendre toute la plage de date
+              const fullDate = [];
+              metricsFile.map( (metrics) => {
+                fullDate.push(metrics.time);
+              });
+              let newFullDate = MainChart.parseTable(fullDate);
+              let newCategories = JSON.parse(JSON.stringify(this.state.options));
+              newCategories.xaxis.categories = newFullDate;
+              this.setState({
+                  options: newCategories
+                }
+              )
+            }
+            else if (keyDateResult) {
+              const fullDate = [];
+              let newFullDate = [];
+              metricsFile.map( (metrics) => {
+                fullDate.push(metrics.time);
+              });
+              if (keyDateResultEnd) {
+                newFullDate = MainChart.parseTable(fullDate, keyDateResult, keyDateResultEnd);
+                let newTab = MainChart.parseTable(tempVariableData, keyDateResult, keyDateResultEnd);
+                let newSeries = JSON.parse(JSON.stringify(this.state.series));
+                newSeries[0].data = newTab;
+                newSeries[0].name = test;
+                console.log("newSeries", newSeries);
+                this.setState({
+                  series: newSeries
+                })
+              } else {
+                newFullDate = MainChart.parseTable(fullDate, keyDateResult);
+              }
+              let newCategories = JSON.parse(JSON.stringify(this.state.options));
+              newCategories.xaxis.categories = newFullDate;
+              this.setState({
+                  options: newCategories
+                }
+              )
+            }
           })
         }
       })
@@ -148,7 +193,7 @@ class MainChart extends React.Component {
 
   render() {
     const { metricsFile } = this.props;
-    const { keyDateResult, activeIndex, options, series } = this.state;
+    const { keyDateResult, keyDateResultEnd, activeIndex, options, series } = this.state;
 
     const slides = items.map((item) => {
       return (
@@ -186,17 +231,24 @@ class MainChart extends React.Component {
             callback={this.receiveCallbackTo.bind(this)}
           />
         </ButtonGroup>
-        <Carousel
-          interval={false}
-          activeIndex={activeIndex}
-          next={this.next}
-          previous={this.previous}
-        >
-          <CarouselIndicators items={items} activeIndex={activeIndex} onClickHandler={this.goToIndex} />
-          {slides}
-          <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
-          <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />
-        </Carousel>
+        <Chart
+          options={options}
+          series={series}
+          type="line"
+          width="900"
+        />
+
+        {/*<Carousel*/}
+        {/*  interval={false}*/}
+        {/*  activeIndex={activeIndex}*/}
+        {/*  next={this.next}*/}
+        {/*  previous={this.previous}*/}
+        {/*>*/}
+        {/*  <CarouselIndicators items={items} activeIndex={activeIndex} onClickHandler={this.goToIndex} />*/}
+        {/*  {slides}*/}
+        {/*  <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />*/}
+        {/*  <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />*/}
+        {/*</Carousel>*/}
       </div>
     )
   }

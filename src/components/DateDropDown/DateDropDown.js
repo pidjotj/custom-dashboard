@@ -30,21 +30,19 @@ class DateDropDown extends React.Component {
 
 
   render() {
-    const { metricsFile, select, value} = this.props;
+    const { metricsFile, select, value, valueTo} = this.props;
     const { selectDate } = this.state;
     let temp = [];
     const specificId = !value && select === 'to' ? 0 : value;
-    console.log("specific", specificId);
     if (specificId !== 0 && select === 'to') {
       temp = metricsFile.slice(specificId + 1);
-      console.log("temp", temp)
     }
+    console.log("specificID", specificId);
     console.log("value", value);
-    console.log("selectDate", selectDate);
     return (
       <Dropdown isOpen={!value && select === 'to' ? false : this.state.open} toggle={this.toggle} className="ml-10">
         <DropdownToggle caret>
-          {selectDate === '' ? "select date " + select + " ..." : selectDate}
+          {selectDate === '' ? "Select a date " + select + " ..." : selectDate}
         </DropdownToggle>
         <DropdownMenu modifiers={{
           setMaxHeight: {
@@ -81,7 +79,8 @@ function mapStateToProps(state) {
 
 DateDropDown.propTypes = {
   select: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.number,
+  valueTo: PropTypes.string,
   callback: PropTypes.func,
 };
 
