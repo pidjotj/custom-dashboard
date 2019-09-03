@@ -20,14 +20,33 @@
     padding: 5%;
 }
 
+.apexcharts-menu-icon {
+    display: none;
+}
+
 /*AverageValues*/
 .column-div {
+    margin-top: 30px;
+    padding-left: 3%;
     display: flex;
+    width: 100%;
     flex-direction: column;
-    align-content: center;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 5%;
-    padding-left: 10%;
-    padding-right: 5%;
+}
+
+.high-value {
+    margin-top: 10px;
+    font-size: medium;
+    color: #6ACD75;
+}
+
+.average-value {
+    margin-top: 10px;
+    font-size: medium;
+    color: #1178f2;
+}
+
+.low-value {
+    margin-top: 10px;
+    font-size: medium;
+    color: #FF4162;
 }

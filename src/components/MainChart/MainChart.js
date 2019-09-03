@@ -1,11 +1,11 @@
-import React from "react";
-import "../../containers/HomePage/styles/index.css";
-import { connect } from "react-redux";
-import Chart from "react-apexcharts";
-import { ButtonGroup, CarouselItem } from "reactstrap";
-import DateDropDown from "../DateDropDown";
-import VariableDropDown from "../VariableDropDown";
-import AverageValues from "../AverageValues";
+import React from 'react';
+import '../../containers/HomePage/styles/index.css';
+import { connect } from 'react-redux';
+import Chart from 'react-apexcharts';
+import { ButtonGroup, CarouselItem } from 'reactstrap';
+import DateDropDown from '../DateDropDown';
+import VariableDropDown from '../VariableDropDown';
+import AverageValues from '../AverageValues';
 
 const items = [
   {
@@ -39,25 +39,37 @@ class MainChart extends React.Component {
       // Chart
       options: {
         chart: {
-          id: "basic-bar"
+          id: 'basic-bar',
         },
         xaxis: {
-          categories: [261951488, 261136384, 267026432, 264118272, 261627904, 265289728, 256368640, 261992448, 258969600, 264736768, 261332992, 259375104, 257339392, 264241152, 261734400, 258854912, 265363456, 262742016, 261017600, 272863232, 267821056, 275456000]
+          categories: [],
+          labels: {
+            style: {
+              color: '#FFFFFF',
+            }
+          }
+        },
+        yaxis: {
+          labels: {
+            style: {
+              color: '#FFFFFF'
+            }
+          }
         },
         dataLabels: {
           style: {
             colors: ['#FFFFFF', '#E91E63', '#9C27B0']
           }
         },
-        colors: ["#FF1654", "#247BA0"],
+        colors: ['#FF1654', '#247BA0'],
         tooltip: {
           theme: 'dark',
         }
       },
       series: [
         {
-          name: "series-1",
-          data: [30, 40, 45, 50, 49, 60, 170, 391, 530, 340, 45, 50, 49, 60, 70, 91]
+          name: 'series-1',
+          data: []
         },
       ],
     };
@@ -92,12 +104,12 @@ class MainChart extends React.Component {
   // END CAROUSEL METHODS
 
   receiveCallbackFrom(key) {
-    console.log("Callback called");
+    console.log('Callback called');
     const { keyDateResult, keyDateResultEnd,  currentVariable, tempVariableData } = this.state;
     const { metricsFile } = this.props;
       this.setState({ keyDateResult: key }, () => {
-          console.log("keyDateResult", key);
-          console.log("keyDataResultEnd", keyDateResultEnd);
+          console.log('keyDateResult', key);
+          console.log('keyDataResultEnd', keyDateResultEnd);
           const fullDate = [];
           metricsFile.map( (metrics) => {
             fullDate.push(metrics.time);
@@ -114,7 +126,7 @@ class MainChart extends React.Component {
             })
           }
           let newFullDate = MainChart.parseTable(fullDate, key, keyDateResultEnd);
-          console.log("~~~~~ newFullDate", newFullDate);
+          console.log('~~~~~ newFullDate', newFullDate);
           let newCategories = JSON.parse(JSON.stringify(this.state.options));
           newCategories.xaxis.categories = newFullDate;
           this.setState({
@@ -128,8 +140,8 @@ class MainChart extends React.Component {
     const { keyDateResult, keyDateResultEnd,  currentVariable, tempVariableData } = this.state;
     const { metricsFile } = this.props;
     this.setState({ keyDateResultEnd: key }, () =>{
-      console.log("keyDateResult", keyDateResult);
-      console.log("keyDataResultEnd", key);
+      console.log('keyDateResult', keyDateResult);
+      console.log('keyDataResultEnd', key);
       const fullDate = [];
       metricsFile.map( (metrics) => {
         fullDate.push(metrics.time);
@@ -146,7 +158,7 @@ class MainChart extends React.Component {
         })
       }
       let newFullDate = MainChart.parseTable(fullDate, keyDateResult, key);
-      console.log("~~~~~ newFullDate", newFullDate);
+      console.log('~~~~~ newFullDate', newFullDate);
       let newCategories = JSON.parse(JSON.stringify(this.state.options));
       newCategories.xaxis.categories = newFullDate;
       this.setState({
@@ -194,12 +206,13 @@ class MainChart extends React.Component {
     const { currentVariable } = this.state;
     let result = [];
 
-    console.log(" ~~ currentVariable", currentVariable);
+    console.log(' ~~ currentVariable', currentVariable);
     result.push(Math.max.apply(Math, tab));
     result.push(Math.min.apply(Math, tab));
-    const average = (result[0] + result[1]) / 2;
+    const sum = tab.reduce(function(a,b) { return a + b});
+    const average = sum / tab.length;
     result.push(average);
-    console.log("result", result);
+    console.log('result', result);
     this.setState({ averageTab: result });
   }
 
@@ -208,15 +221,15 @@ class MainChart extends React.Component {
     let oldTabTemp = [];
 
     if (keyFrom !== -1 && keyTo === -1) {
-      console.log("IN KEYFRON & KEYTO === -1");
+      console.log('IN KEYFRON & KEYTO === -1');
       oldTabTemp = oldTab.slice(keyFrom);
-      console.log("~~ oldTabTemp", oldTabTemp);
+      console.log('~~ oldTabTemp', oldTabTemp);
     } else if (keyFrom !== -1 && keyTo !== -1) {
-      console.log("IN KEYFRON & KEYTO");
+      console.log('IN KEYFRON & KEYTO');
       // Have to add 2 because of the table modification in Dropdown.
       oldTabTemp = oldTab.slice(keyFrom, keyTo + keyFrom + 2);
     } else {
-      console.log("IN KEYFRON === -1 & KEYTO === -1");
+      console.log('IN KEYFRON === -1 & KEYTO === -1');
       oldTabTemp = oldTab;
     }
     let newTab = [];
@@ -253,12 +266,12 @@ class MainChart extends React.Component {
           onExited={this.onExited}
           key={item.id}
         >
-          <div className="p-12">
+          <div className='p-12'>
             <Chart
               options={options}
               series={series}
               type={item.type}
-              width="900"
+              width='900'
             />
           </div>
         </CarouselItem>
@@ -268,35 +281,35 @@ class MainChart extends React.Component {
 
 
     return (
-      <div className="main-div">
-        <AverageValues tab={averageTab}/>
+      <div className='main-div'>
         <div>
-            <div className="row-div">
+            <div className='row-div'>
               <VariableDropDown
                 callback={this.receiveCallbackVariable.bind(this)}
               />
               <ButtonGroup>
                 <DateDropDown
-                  select={"from"}
+                  select={'from'}
                   value={keyDateResult}
                   callback={this.receiveCallbackFrom.bind(this)}
                 />
                 <DateDropDown
-                  select={"to"}
+                  select={'to'}
                   value={keyDateResult}
                   callback={this.receiveCallbackTo.bind(this)}
                 />
               </ButtonGroup>
             </div>
-          <div className="chart-div">
+          <div className='chart-div'>
             <Chart
               options={options}
               series={series}
-              type="line"
-              width="900"
+              type='line'
+              width='900'
             />
           </div>
         </div>
+        <AverageValues tab={averageTab}/>
         {/*<Carousel*/}
         {/*  interval={false}*/}
         {/*  activeIndex={activeIndex}*/}
@@ -305,8 +318,8 @@ class MainChart extends React.Component {
         {/*>*/}
         {/*  <CarouselIndicators items={items} activeIndex={activeIndex} onClickHandler={this.goToIndex} />*/}
         {/*  {slides}*/}
-        {/*  <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />*/}
-        {/*  <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />*/}
+        {/*  <CarouselControl direction='prev' directionText='Previous' onClickHandler={this.previous} />*/}
+        {/*  <CarouselControl direction='next' directionText='Next' onClickHandler={this.next} />*/}
         {/*</Carousel>*/}
       </div>
     )
