@@ -1,39 +1,23 @@
 import React from 'react';
-import '../../containers/HomePage/styles/index.css';
+import '../HomePage/styles/index.css';
 import { connect } from 'react-redux';
 import Chart from 'react-apexcharts';
 import { ButtonGroup } from 'reactstrap';
-import DateDropDown from '../DateDropDown';
-import VariableDropDown from '../VariableDropDown';
-import AverageValues from '../AverageValues';
-import ButtonChartType from "../ButtonChartType";
-
-const items = [
-  {
-    id: 0,
-    type: 'area',
-  },
-  {
-    id: 1,
-    type: 'line'
-  },
-];
+import DateDropDown from '../../components/DateDropDown';
+import VariableDropDown from '../../components/VariableDropDown';
+import AverageValues from '../../components/AverageValues';
+import ButtonChartType from "../../components/ButtonChartType";
 
 class MainChart extends React.Component {
   constructor(props) {
     super(props);
-    this.next = this.next.bind(this);
-    this.previous = this.previous.bind(this);
-    this.goToIndex = this.goToIndex.bind(this);
-    this.onExiting = this.onExiting.bind(this);
-    this.onExited = this.onExited.bind(this);
 
     this.state = {
       activeIndex: 0,
       keyDateResult: -1,
       keyDateResultEnd: -1,
       toResult: '',
-      currentVariable: 'files',
+      currentVariable: '',
       tempVariableData: [],
       averageTab: [],
 
@@ -77,45 +61,13 @@ class MainChart extends React.Component {
     };
   }
 
-  // CAROUSEL METHODS
-  onExiting() {
-    this.animating = true;
-  }
-
-  onExited() {
-    this.animating = false;
-  }
-
-  next() {
-    if (this.animating) return;
-    const nextIndex = this.state.activeIndex === items.length - 1 ? 0 : this.state.activeIndex + 1;
-    this.setState({ activeIndex: nextIndex });
-  }
-
-  previous() {
-    if (this.animating) return;
-    const nextIndex = this.state.activeIndex === 0 ? items.length - 1 : this.state.activeIndex - 1;
-    this.setState({ activeIndex: nextIndex });
-  }
-
-  goToIndex(newIndex) {
-    if (this.animating) return;
-    this.setState({ activeIndex: newIndex });
-  }
-
-  // END CAROUSEL METHODS
-
   receiveCallbackFrom(key) {
-    console.log('Callback called');
-    const { keyDateResult, keyDateResultEnd,  currentVariable, tempVariableData } = this.state;
+    const { keyDateResultEnd, currentVariable, tempVariableData } = this.state;
     const { metricsFile } = this.props;
     if (key > keyDateResultEnd && keyDateResultEnd !== -1) {
-      console.log("key > keyDateEnd");
       this.setState({ keyDateResultEnd: -1 });
     }
       this.setState({ keyDateResult: key }, () => {
-        console.log('keyDateResult', key);
-        console.log('keyDataResultEnd', keyDateResultEnd);
         const fullDate = [];
         metricsFile.map( (metrics) => {
           fullDate.push(metrics.time);
@@ -128,7 +80,7 @@ class MainChart extends React.Component {
           this.setState({
             series: newSeries
           }, () => {
-            this.getValues(newTab)
+            this.getValues(newTab);
           })
         }
         let newFullDate = MainChart.parseTable(fullDate, key, keyDateResultEnd);
@@ -143,7 +95,7 @@ class MainChart extends React.Component {
   };
 
   receiveCallbackTo(key) {
-    const { keyDateResult, keyDateResultEnd,  currentVariable, tempVariableData } = this.state;
+    const { keyDateResult, currentVariable, tempVariableData } = this.state;
     const { metricsFile } = this.props;
     this.setState({ keyDateResultEnd: key }, () =>{
       console.log('keyDateResult', keyDateResult);
@@ -160,7 +112,7 @@ class MainChart extends React.Component {
         this.setState({
           series: newSeries
         }, () => {
-          this.getValues(newTab)
+          this.getValues(newTab);
         })
       }
       let newFullDate = MainChart.parseTable(fullDate, keyDateResult, key);
@@ -174,15 +126,14 @@ class MainChart extends React.Component {
     })
   }
 
-  receiveCallbackVariable(variable) {
+  receiveCallbackVariable(variable, fromMain) {
     let nameVar = variable;
     const { metricsFile } = this.props;
-    this.setState( { currentVariable: variable }, (variable) => {
+    this.setState( { currentVariable: variable }, () => {
       let temp = [];
       metricsFile.map( (metrics) => {
         temp.push(metrics[nameVar]);
       });
-      this.getValues(temp);
       this.setState({ tempVariableData: temp }, () => {
         const { tempVariableData, keyDateResult, keyDateResultEnd } = this.state;
         let newTab = MainChart.parseTable(tempVariableData, keyDateResult, keyDateResultEnd);
@@ -199,6 +150,10 @@ class MainChart extends React.Component {
           let newFullDate = MainChart.parseTable(fullDate, keyDateResult, keyDateResultEnd);
           let newCategories = JSON.parse(JSON.stringify(this.state.options));
           newCategories.xaxis.categories = newFullDate;
+          // TRICKS
+          if (!fromMain) {
+            this.getValues(temp);
+          }
           this.setState({
               options: newCategories
             }
@@ -210,15 +165,13 @@ class MainChart extends React.Component {
 
   receiveType(type) {
     this.setState({ chartType: type }, () => {
-      this.receiveCallbackVariable(this.state.currentVariable)
+      this.receiveCallbackVariable(this.state.currentVariable, true)
     });
   }
 
   getValues(tab) {
-    const { currentVariable } = this.state;
     let result = [];
 
-    console.log(' ~~ currentVariable', currentVariable);
     result.push(Math.max.apply(Math, tab));
     result.push(Math.min.apply(Math, tab));
     const sum = tab.reduce(function(a,b) { return a + b});
@@ -233,15 +186,11 @@ class MainChart extends React.Component {
     let oldTabTemp = [];
 
     if (keyFrom !== -1 && keyTo === -1) {
-      console.log('IN KEYFRON & KEYTO === -1');
       oldTabTemp = oldTab.slice(keyFrom);
-      console.log('~~ oldTabTemp', oldTabTemp);
     } else if (keyFrom !== -1 && keyTo !== -1) {
-      console.log('IN KEYFRON & KEYTO');
       // Have to add 2 because of the table modification in Dropdown.
       oldTabTemp = oldTab.slice(keyFrom, keyTo + keyFrom + 2);
     } else {
-      console.log('IN KEYFRON === -1 & KEYTO === -1');
       oldTabTemp = oldTab;
     }
     let newTab = [];

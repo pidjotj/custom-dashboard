@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getInfosFromJSON } from "./store/actions/home.action";
 
-import MainChart  from '../../components/MainChart';
+import MainChart  from '../MainChart';
 
 class HomePage extends React.Component {
 

@@ -30,18 +30,16 @@ class DateDropDown extends React.Component {
 
 
   render() {
-    const { metricsFile, select, value, valueTo} = this.props;
+    const { metricsFile, select, value } = this.props;
     const { selectDate } = this.state;
     let temp = [];
     const specificId = value === -1 && select === 'to' ? 0 : value;
     if (specificId !== -1 && select === 'to') {
       temp = metricsFile.slice(specificId + 1);
     }
-    console.log("specificID", specificId);
-    console.log("value", value);
     return (
       <Dropdown isOpen={value === -1 && select === 'to' ? false : this.state.open} toggle={this.toggle} className="ml-10">
-        <DropdownToggle color="warning" caret>
+        <DropdownToggle color="secondary" caret>
           {selectDate === '' ? "Select a date " + select + " ..." : selectDate}
         </DropdownToggle>
         <DropdownMenu modifiers={{
