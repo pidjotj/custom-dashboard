@@ -39,8 +39,8 @@ class VariableDropDown extends Component {
     console.log("new keys", keys);
 
     return (
-      <Dropdown isOpen={this.state.open} toggle={this.toggle} className="ml-10">
-        <DropdownToggle caret>
+      <Dropdown isOpen={this.state.open} toggle={this.toggle} >
+        <DropdownToggle color="primary" caret>
           {selectVariable === '' ? "select variable ..." : selectVariable}
         </DropdownToggle>
         <DropdownMenu modifiers={{
@@ -59,8 +59,8 @@ class VariableDropDown extends Component {
             },
           },
         }}>
-          {keys.map( (key) => (
-            <DropdownItem onClick={(e) => this.onChange(e)}>{key}</DropdownItem>
+          {keys.map( (key, i) => (
+            <DropdownItem key={i} onClick={(e) => this.onChange(e)}>{key}</DropdownItem>
           ))}
         </DropdownMenu>
       </Dropdown>

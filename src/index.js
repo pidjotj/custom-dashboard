@@ -3,10 +3,25 @@ import ReactDOM from "react-dom";
 import "./styles/index.css";
 import App from '../src/containers/App'
 import { Provider } from 'react-redux';
+import FontFaceObserver from 'fontfaceobserver';
 import * as serviceWorker from "./serviceWorker";
 import 'bootstrap/dist/css/bootstrap.css';
 
 import configureStore from './store/configureStore';
+
+
+// Observe loading of Open Sans (to remove open sans, remove the <link> tag in
+// the index.html file and this observer)
+const openSansObserver = new FontFaceObserver('Open Sans', {});
+
+// When Open Sans is loaded, add a font-family using Open Sans to the body
+openSansObserver.load().then(() => {
+  document.body.classList.add('fontLoaded');
+  console.log("font loaded")
+}, () => {
+  document.body.classList.remove('fontLoaded');
+});
+
 
 const initialState = {};
 const store = configureStore(initialState);

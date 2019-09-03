@@ -41,7 +41,7 @@ class DateDropDown extends React.Component {
     console.log("value", value);
     return (
       <Dropdown isOpen={value === -1 && select === 'to' ? false : this.state.open} toggle={this.toggle} className="ml-10">
-        <DropdownToggle caret>
+        <DropdownToggle color="warning" caret>
           {selectDate === '' ? "Select a date " + select + " ..." : selectDate}
         </DropdownToggle>
         <DropdownMenu modifiers={{

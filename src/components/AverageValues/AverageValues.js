@@ -9,9 +9,9 @@ class AverageValues extends React.Component {
 
     return (
       <div className="column-div">
-        <span className="high-value">Highest: {tab[0]}</span>
-        <span className="average-value">Average: {tab[2]}</span>
-        <span className="low-value">Lowest: {tab[1]}</span>
+        <span className="high-value">Highest: {<span className="normal-text">{tab[0]}</span>}</span>
+        <span className="average-value">Average: {<span className="normal-text">{tab[2]}</span>}</span>
+        <span className="low-value">Lowest: {<span className="normal-text">{tab[1]}</span>}</span>
       </div>
     );
   }
