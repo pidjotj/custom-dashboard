@@ -1,5 +1,6 @@
 import React from 'react';
-import '../../App.css';
+import './style/App.css';
+import '../../styles/index.css';
 import { Helmet } from "react-helmet";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import HomePage from "../HomePage";

@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/index.css";
+import "../../containers/HomePage/styles/index.css";
 import { connect } from "react-redux";
 import Chart from "react-apexcharts";
 import { ButtonGroup, CarouselItem } from "reactstrap";
@@ -239,7 +239,7 @@ class MainChart extends React.Component {
     });
 
     return (
-      <div className="mt-20">
+      <div className="row-div">
         <VariableDropDown
           callback={this.receiveCallbackVariable.bind(this)}
         />
