@@ -2,7 +2,7 @@ import React from "react";
 import "../../styles/index.css";
 import { connect } from "react-redux";
 import Chart from "react-apexcharts";
-import { ButtonGroup, Carousel, CarouselControl, CarouselIndicators, CarouselItem } from "reactstrap";
+import { ButtonGroup, CarouselItem } from "reactstrap";
 import DateDropDown from "../DateDropDown";
 import VariableDropDown from "../VariableDropDown";
 
@@ -28,8 +28,8 @@ class MainChart extends React.Component {
 
     this.state = {
       activeIndex: 0,
-      keyDateResult: null,
-      keyDateResultEnd: null,
+      keyDateResult: -1,
+      keyDateResultEnd: -1,
       toResult: '',
       currentVariable: '',
 
@@ -91,26 +91,82 @@ class MainChart extends React.Component {
   // END CAROUSEL METHODS
 
   receiveCallbackFrom(key) {
-      this.setState({ keyDateResult: key });
+    console.log("Callback called");
+    const { keyDateResult, keyDateResultEnd,  currentVariable, tempVariableData } = this.state;
+    const { metricsFile } = this.props;
+      this.setState({ keyDateResult: key }, () => {
+          console.log("keyDateResult", key);
+          console.log("keyDataResultEnd", keyDateResultEnd);
+          const fullDate = [];
+          metricsFile.map( (metrics) => {
+            fullDate.push(metrics.time);
+          });
+          if (currentVariable !== '') {
+            let newTab = MainChart.parseTable(tempVariableData, key, keyDateResultEnd);
+            let newSeries = JSON.parse(JSON.stringify(this.state.series));
+            newSeries[0].data = newTab;
+            newSeries[0].name = currentVariable;
+            this.setState({
+              series: newSeries
+            })
+          }
+          let newFullDate = MainChart.parseTable(fullDate, key, keyDateResultEnd);
+          console.log("~~~~~ newFullDate", newFullDate);
+          let newCategories = JSON.parse(JSON.stringify(this.state.options));
+          newCategories.xaxis.categories = newFullDate;
+          this.setState({
+              options: newCategories
+            }
+          )
+      });
   };
 
   receiveCallbackTo(key) {
-    this.setState({ keyDateResultEnd: key })
+    const { keyDateResult, keyDateResultEnd,  currentVariable, tempVariableData } = this.state;
+    const { metricsFile } = this.props;
+    this.setState({ keyDateResultEnd: key }, () =>{
+      console.log("keyDateResult", keyDateResult);
+      console.log("keyDataResultEnd", key);
+      const fullDate = [];
+      metricsFile.map( (metrics) => {
+        fullDate.push(metrics.time);
+      });
+      if (currentVariable !== '') {
+        let newTab = MainChart.parseTable(tempVariableData, keyDateResult, key);
+        let newSeries = JSON.parse(JSON.stringify(this.state.series));
+        newSeries[0].data = newTab;
+        newSeries[0].name = currentVariable;
+        this.setState({
+          series: newSeries
+        })
+      }
+      let newFullDate = MainChart.parseTable(fullDate, keyDateResult, key);
+      console.log("~~~~~ newFullDate", newFullDate);
+      let newCategories = JSON.parse(JSON.stringify(this.state.options));
+      newCategories.xaxis.categories = newFullDate;
+      this.setState({
+          options: newCategories
+        }
+      )
+    })
   }
 
   static parseTable(oldTab, keyFrom, keyTo = null) {
 
     let oldTabTemp = [];
 
-    if (keyFrom && !keyTo) {
+    if (keyFrom !== -1 && keyTo === -1) {
+      console.log("IN KEYFRON & KEYTO === -1");
       oldTabTemp = oldTab.slice(keyFrom);
-    } else if (keyFrom && keyTo) {
+      console.log("~~ oldTabTemp", oldTabTemp);
+    } else if (keyFrom !== -1 && keyTo !== -1) {
+      console.log("IN KEYFRON & KEYTO");
       // Have to add 2 because of the table modification in Dropdown.
       oldTabTemp = oldTab.slice(keyFrom, keyTo + keyFrom + 2);
     } else {
+      console.log("IN KEYFRON === -1 & KEYTO === -1");
       oldTabTemp = oldTab;
     }
-
     let newTab = [];
 
     if (oldTabTemp.length > 20) {
@@ -127,66 +183,34 @@ class MainChart extends React.Component {
   }
 
   receiveCallbackVariable(variable) {
-    let test = variable;
+    let nameVar = variable;
     const { metricsFile } = this.props;
     this.setState( { currentVariable: variable }, (variable) => {
       let temp = [];
       metricsFile.map( (metrics) => {
-        temp.push(metrics[test]);
+        temp.push(metrics[nameVar]);
       });
       this.setState({ tempVariableData: temp }, () => {
-        const { tempVariableData } = this.state;
-        if (tempVariableData.length > 20) {
-          let newTab = MainChart.parseTable(tempVariableData);
-          let newSeries = JSON.parse(JSON.stringify(this.state.series));
-          newSeries[0].data = newTab;
-          newSeries[0].name = test;
+        const { tempVariableData, keyDateResult, keyDateResultEnd } = this.state;
+        let newTab = MainChart.parseTable(tempVariableData, keyDateResult, keyDateResultEnd);
+        let newSeries = JSON.parse(JSON.stringify(this.state.series));
+        newSeries[0].data = newTab;
+        newSeries[0].name = nameVar;
+        this.setState({
+          series: newSeries
+        }, () => {
+          const fullDate = [];
+          metricsFile.map( (metrics) => {
+            fullDate.push(metrics.time);
+          });
+          let newFullDate = MainChart.parseTable(fullDate, keyDateResult, keyDateResultEnd);
+          let newCategories = JSON.parse(JSON.stringify(this.state.options));
+          newCategories.xaxis.categories = newFullDate;
           this.setState({
-            series: newSeries
-          }, () => {
-            const { keyDateResult, keyDateResultEnd } = this.state;
-            if (!keyDateResult) {
-              // TODO prendre toute la plage de date
-              const fullDate = [];
-              metricsFile.map( (metrics) => {
-                fullDate.push(metrics.time);
-              });
-              let newFullDate = MainChart.parseTable(fullDate);
-              let newCategories = JSON.parse(JSON.stringify(this.state.options));
-              newCategories.xaxis.categories = newFullDate;
-              this.setState({
-                  options: newCategories
-                }
-              )
+              options: newCategories
             }
-            else if (keyDateResult) {
-              const fullDate = [];
-              let newFullDate = [];
-              metricsFile.map( (metrics) => {
-                fullDate.push(metrics.time);
-              });
-              if (keyDateResultEnd) {
-                newFullDate = MainChart.parseTable(fullDate, keyDateResult, keyDateResultEnd);
-                let newTab = MainChart.parseTable(tempVariableData, keyDateResult, keyDateResultEnd);
-                let newSeries = JSON.parse(JSON.stringify(this.state.series));
-                newSeries[0].data = newTab;
-                newSeries[0].name = test;
-                console.log("newSeries", newSeries);
-                this.setState({
-                  series: newSeries
-                })
-              } else {
-                newFullDate = MainChart.parseTable(fullDate, keyDateResult);
-              }
-              let newCategories = JSON.parse(JSON.stringify(this.state.options));
-              newCategories.xaxis.categories = newFullDate;
-              this.setState({
-                  options: newCategories
-                }
-              )
-            }
-          })
-        }
+          )
+        })
       })
     })
   }

@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dd7120a7-671d-4b5d-89a8-4aa37b2dadf5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output.css" beforeDir="false" afterPath="$PROJECT_DIR$/output.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/DateDropDown/DateDropDown.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DateDropDown/DateDropDown.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/MainChart/MainChart.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MainChart/MainChart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/styles/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -71,8 +66,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/components/MainChart/MainChart.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="386">
-                  <caret line="112" lean-forward="true" selection-start-line="112" selection-end-line="112" />
+                <state relative-caret-position="229">
+                  <caret line="164" column="46" selection-start-line="164" selection-start-column="46" selection-end-line="164" selection-end-column="46" />
                   <folding>
                     <element signature="e#0#26#0" expanded="true" />
                   </folding>
@@ -105,8 +100,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/components/DateDropDown/DateDropDown.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-310">
-                  <caret line="37" column="10" selection-start-line="37" selection-start-column="6" selection-end-line="37" selection-end-column="10" />
+                <state relative-caret-position="242">
+                  <caret line="19" column="27" lean-forward="true" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
                   <folding>
                     <element signature="e#0#26#0" expanded="true" />
                   </folding>
@@ -188,9 +183,12 @@
       <find>font-f</find>
       <find>slice</find>
       <find>s</find>
+      <find>test</find>
+      <find>newTab</find>
     </findStrings>
     <replaceStrings>
       <replace>&quot;</replace>
+      <replace>nameVar</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -261,13 +259,6 @@
               <item name="ercom-technical-test" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="components" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ercom-technical-test" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ercom-technical-test" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-              <item name="DateDropDown" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ercom-technical-test" type="b2602c69:ProjectViewProjectNode" />
@@ -344,12 +335,12 @@
       <option name="presentableId" value="Default" />
       <updated>1567180083812</updated>
       <workItem from="1567180085365" duration="1683000" />
-      <workItem from="1567282145418" duration="44897000" />
+      <workItem from="1567282145418" duration="48786000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46580000" />
+    <option name="totallyTimeSpent" value="50469000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -573,8 +564,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/DateDropDown/DateDropDown.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-310">
-          <caret line="37" column="10" selection-start-line="37" selection-start-column="6" selection-end-line="37" selection-end-column="10" />
+        <state relative-caret-position="242">
+          <caret line="19" column="27" lean-forward="true" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
@@ -583,8 +574,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/MainChart/MainChart.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="386">
-          <caret line="112" lean-forward="true" selection-start-line="112" selection-end-line="112" />
+        <state relative-caret-position="229">
+          <caret line="164" column="46" selection-start-line="164" selection-start-column="46" selection-end-line="164" selection-end-column="46" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
