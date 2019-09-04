@@ -54,7 +54,7 @@ class MainChart extends React.Component {
       },
       series: [
         {
-          name: 'series-1',
+          name: '',
           data: []
         },
       ],
@@ -84,7 +84,6 @@ class MainChart extends React.Component {
           })
         }
         let newFullDate = MainChart.parseTable(fullDate, key, keyDateResultEnd);
-        console.log('~~~~~ newFullDate', newFullDate);
         let newCategories = JSON.parse(JSON.stringify(this.state.options));
         newCategories.xaxis.categories = newFullDate;
         this.setState({
@@ -98,8 +97,6 @@ class MainChart extends React.Component {
     const { keyDateResult, currentVariable, tempVariableData } = this.state;
     const { metricsFile } = this.props;
     this.setState({ keyDateResultEnd: key }, () =>{
-      console.log('keyDateResult', keyDateResult);
-      console.log('keyDataResultEnd', key);
       const fullDate = [];
       metricsFile.map( (metrics) => {
         fullDate.push(metrics.time);
@@ -116,7 +113,6 @@ class MainChart extends React.Component {
         })
       }
       let newFullDate = MainChart.parseTable(fullDate, keyDateResult, key);
-      console.log('~~~~~ newFullDate', newFullDate);
       let newCategories = JSON.parse(JSON.stringify(this.state.options));
       newCategories.xaxis.categories = newFullDate;
       this.setState({
@@ -150,7 +146,6 @@ class MainChart extends React.Component {
           let newFullDate = MainChart.parseTable(fullDate, keyDateResult, keyDateResultEnd);
           let newCategories = JSON.parse(JSON.stringify(this.state.options));
           newCategories.xaxis.categories = newFullDate;
-          // TRICKS
           if (!fromMain) {
             this.getValues(temp);
           }
@@ -177,7 +172,6 @@ class MainChart extends React.Component {
     const sum = tab.reduce(function(a,b) { return a + b});
     const average = sum / tab.length;
     result.push(average);
-    console.log('result', result);
     this.setState({ averageTab: result });
   }
 

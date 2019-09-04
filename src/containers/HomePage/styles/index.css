@@ -34,54 +34,24 @@
 }
 
 .high-value {
-    font-family: Quicksand;
-    font-style: italic;
+    font-family: Quicksand, sans-serif;
     margin-top: 10px;
     font-size: medium;
     color: #6ACD75;
 }
 
 .average-value {
-    font-style: italic;
+    font-family: Quicksand, sans-serif;
     margin-top: 10px;
     font-size: medium;
     color: #1178f2;
 }
 
 .low-value {
-    font-style: italic;
+    font-family: Quicksand, sans-serif;
     margin-top: 10px;
     font-size: medium;
     color: #FF4162;
 }
 
-/*ButtonChartType*/
 
-.button-div {
-    margin-top: 10%;
-    padding-left: 12px;
-}
-
-.button-group {
-    font-family: Quicksand, sans-serif;
-    font-size: medium;
-    margin-top: 10px;
-    background-color: transparent;
-    border-radius: 10px;
-    align-content: center;
-    text-align: center;
-    align-items: center;
-    align-self: center;
-    vertical-align: middle;
-    justify-content: center;
-    width: 100px;
-    color: whitesmoke;
-}
-
-.dropdown-toggle {
-    background-color: transparent;
-}
-
-.custom-dropdown {
-    border: #2b6cb0;
-}

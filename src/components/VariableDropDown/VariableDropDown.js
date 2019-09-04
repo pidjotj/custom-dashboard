@@ -41,7 +41,7 @@ class VariableDropDown extends Component {
     return (
       <Dropdown isOpen={this.state.open} toggle={this.toggle} >
         <DropdownToggle color="primary" caret>
-          {selectVariable === '' ? "select variable ..." : selectVariable}
+          {selectVariable === '' ? "Select a variable" : selectVariable}
         </DropdownToggle>
         <DropdownMenu modifiers={{
           setMaxHeight: {

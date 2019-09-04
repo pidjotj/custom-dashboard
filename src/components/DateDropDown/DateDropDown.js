@@ -40,7 +40,7 @@ class DateDropDown extends React.Component {
     return (
       <Dropdown isOpen={value === -1 && select === 'to' ? false : this.state.open} toggle={this.toggle} className="ml-10">
         <DropdownToggle color="secondary" caret>
-          {selectDate === '' ? "Select a date " + select + " ..." : selectDate}
+          {selectDate === '' ? select === 'from' ? 'From ...' : 'To ...' : selectDate}
         </DropdownToggle>
         <DropdownMenu modifiers={{
           setMaxHeight: {

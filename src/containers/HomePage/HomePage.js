@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { getInfosFromJSON } from "./store/actions/home.action";
 
 import MainChart  from '../MainChart';
+import Header from "../../components/Header";
 
 class HomePage extends React.Component {
 
@@ -16,6 +17,7 @@ class HomePage extends React.Component {
     console.log("metricsFile: ", metricsFile[0]);
     return (
       <div>
+        <Header />
         <MainChart />
       </div>
     );

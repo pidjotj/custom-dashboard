@@ -1,0 +1,33 @@
+/*ButtonChartType*/
+
+.chart-type-title {
+    font-size: medium;
+}
+
+.button-div {
+    width: fit-content;
+    font-family: Quicksand, sans-serif;
+    margin-top: 10%;
+    padding-left: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.button-group {
+    font-size: medium;
+    margin-top: 10px;
+    background-color: transparent;
+    border-radius: 10px;
+    align-content: center;
+    text-align: center;
+    align-items: center;
+    align-self: center;
+    vertical-align: middle;
+    justify-content: center;
+    width: 100px;
+    color: whitesmoke;
+}
+
+.custom-dropdown {
+    border: #2b6cb0;
+}

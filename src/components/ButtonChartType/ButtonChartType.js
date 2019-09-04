@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ButtonGroup } from 'reactstrap';
+import './style/index.css'
 
 class ButtonChartType extends React.Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class ButtonChartType extends React.Component {
   render() {
     return (
       <div className="button-div">
+        <span className="chart-type-title">Select a chart type:</span>
         <ButtonGroup size="md" vertical>
           <button onClick={(value) => this.getChartType(value)} className="button-group" value={"line"}>line</button>
           <button onClick={(value) => this.getChartType(value)} className="button-group" value={"area"}>area</button>
