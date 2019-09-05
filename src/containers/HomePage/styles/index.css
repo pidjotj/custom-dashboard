@@ -11,17 +11,22 @@
     align-content: center;
     align-items: center;
     justify-content: space-between;
-    padding-top: 5%;
+    padding-top: 2%;
     padding-left: 10%;
     padding-right: 5%;
 }
 
 .chart-div {
-    padding: 5%;
+    padding-top: 2%;
 }
 
 .apexcharts-menu-icon {
     display: none;
+}
+
+/*MemoryChart*/
+.dropdown-outside-global {
+    margin-left: 8%;
 }
 
 /*AverageValues*/

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import photo from '../../assets/images/me.jpeg'
+import logo from '../../assets/images/home.svg'
 import './style/index.css'
 
 class Header extends Component {
@@ -9,6 +10,7 @@ class Header extends Component {
       <div>
       <div className="header-div">
         <div>
+          <img className="logo" src={logo} alt="logo"/>
           <span className="header-title">My Dashboard</span>
         </div>
         <div>

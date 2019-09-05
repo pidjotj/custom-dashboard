@@ -7,6 +7,7 @@ import DateDropDown from '../../components/DateDropDown';
 import VariableDropDown from '../../components/VariableDropDown';
 import AverageValues from '../../components/AverageValues';
 import ButtonChartType from "../../components/ButtonChartType";
+import ChartTitle from "../../components/ChartTitle";
 
 class MainChart extends React.Component {
   constructor(props) {
@@ -65,7 +66,9 @@ class MainChart extends React.Component {
     const { keyDateResultEnd, currentVariable, tempVariableData } = this.state;
     const { metricsFile } = this.props;
     if (key > keyDateResultEnd && keyDateResultEnd !== -1) {
-      this.setState({ keyDateResultEnd: -1 });
+      this.setState({ keyDateResult: -1 }, () => {
+      });
+
     }
       this.setState({ keyDateResult: key }, () => {
         const fullDate = [];
@@ -214,6 +217,7 @@ class MainChart extends React.Component {
     return (
       <div className='main-div'>
         <div>
+          <ChartTitle title='Global Chart' />
             <div className='row-div'>
               <VariableDropDown
                 callback={this.receiveCallbackVariable.bind(this)}
@@ -236,7 +240,7 @@ class MainChart extends React.Component {
               options={options}
               series={series}
               type={chartType}
-              width='900'
+              width='1000'
             />
           </div>
         </div>
