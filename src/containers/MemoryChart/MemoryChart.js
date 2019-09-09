@@ -4,10 +4,8 @@ import ChartTitle from "../../components/ChartTitle";
 import Chart from "react-apexcharts";
 import { ButtonGroup  } from "reactstrap";
 import DateDropDown from "../../components/DateDropDown/DateDropDown";
-import AverageValues from "../../components/AverageValues";
-import ButtonChartType from "../../components/ButtonChartType/ButtonChartType";
-import MainChart from "../MainChart";
-
+import { maxTabMemory } from "../../utils/Constants";
+import { ChartUtils } from "../../utils/ChartUtils";
 
 class MemoryChart extends React.Component {
   constructor(props) {
@@ -78,28 +76,33 @@ class MemoryChart extends React.Component {
 
   getMemoryInfosFromMetrics() {
     const { metricsFile } = this.props;
-    const { series, keyDateResult, keyDateResultEnd } = this.state;
+    const { series, keyDateResult, keyDateResultEnd, options } = this.state;
     const varName = ['used', 'buff', 'cach', 'free'];
     let usedTab = [];
     let buffTab = [];
     let cachTab = [];
     let freeTab = [];
+    let timeTab = [];
     metricsFile.map( (metrics) => {
       usedTab.push(metrics[varName[0]]);
       buffTab.push(metrics[varName[1]]);
       cachTab.push(metrics[varName[2]]);
       freeTab.push(metrics[varName[3]]);
+      timeTab.push(metrics.time);
     });
     let newSeries = JSON.parse(JSON.stringify(series));
-    newSeries[0].data = MainChart.parseTable(usedTab, keyDateResult, keyDateResultEnd);
+    newSeries[0].data = ChartUtils.parseTable(usedTab, keyDateResult, keyDateResultEnd, maxTabMemory);
     newSeries[0].name = (varName[0]);
-    newSeries[1].data = MainChart.parseTable(buffTab, keyDateResult, keyDateResultEnd);
+    newSeries[1].data = ChartUtils.parseTable(buffTab, keyDateResult, keyDateResultEnd, maxTabMemory);
     newSeries[1].name = varName[1];
-    newSeries[2].data = MainChart.parseTable(cachTab, keyDateResult, keyDateResultEnd);
+    newSeries[2].data = ChartUtils.parseTable(cachTab, keyDateResult, keyDateResultEnd, maxTabMemory);
     newSeries[2].name = varName[2];
-    newSeries[3].data = MainChart.parseTable(freeTab, keyDateResult, keyDateResultEnd);
+    newSeries[3].data = ChartUtils.parseTable(freeTab, keyDateResult, keyDateResultEnd, maxTabMemory);
     newSeries[3].name = varName[3];
-    this.setState({ series: newSeries })
+    this.setState({ series: newSeries });
+    let newFullDate = ChartUtils.parseTable(timeTab, keyDateResult, keyDateResultEnd, maxTabMemory);
+    let newCategories = JSON.parse(JSON.stringify(options));
+    newCategories.xaxis.categories = newFullDate;
   };
 
   receiveCallbackFrom(key) {
@@ -111,10 +114,10 @@ class MemoryChart extends React.Component {
       metricsFile.map( (metrics) => {
         fullDate.push(metrics.time);
       });
-      let usedTab = MainChart.parseTable(series[0].data, key, keyDateResultEnd);
-      let buffTab = MainChart.parseTable(series[1].data, key, keyDateResultEnd);
-      let cachTab = MainChart.parseTable(series[2].data, key, keyDateResultEnd);
-      let freeTab = MainChart.parseTable(series[3].data, key, keyDateResultEnd);
+      let usedTab = ChartUtils.parseTable(series[0].data, key, keyDateResultEnd);
+      let buffTab = ChartUtils.parseTable(series[1].data, key, keyDateResultEnd);
+      let cachTab = ChartUtils.parseTable(series[2].data, key, keyDateResultEnd);
+      let freeTab = ChartUtils.parseTable(series[3].data, key, keyDateResultEnd);
       let newSeries = JSON.parse(JSON.stringify(series));
       newSeries[0].data = usedTab;
       newSeries[1].data = buffTab;
@@ -123,7 +126,7 @@ class MemoryChart extends React.Component {
       this.setState({
         series: newSeries
       });
-      let newFullDate = MainChart.parseTable(fullDate, key, keyDateResultEnd);
+      let newFullDate = ChartUtils.parseTable(fullDate, key, keyDateResultEnd);
       let newCategories = JSON.parse(JSON.stringify(options));
       newCategories.xaxis.categories = newFullDate;
       this.setState({
@@ -142,10 +145,10 @@ class MemoryChart extends React.Component {
       metricsFile.map( (metrics) => {
         fullDate.push(metrics.time);
       });
-      let usedTab = MainChart.parseTable(series[0].data, keyDateResult, key);
-      let buffTab = MainChart.parseTable(series[1].data, keyDateResult, key);
-      let cachTab = MainChart.parseTable(series[2].data, keyDateResult, key);
-      let freeTab = MainChart.parseTable(series[3].data, keyDateResult, key);
+      let usedTab = ChartUtils.parseTable(series[0].data, keyDateResult, key, maxTabMemory);
+      let buffTab = ChartUtils.parseTable(series[1].data, keyDateResult, key, maxTabMemory);
+      let cachTab = ChartUtils.parseTable(series[2].data, keyDateResult, key, maxTabMemory);
+      let freeTab = ChartUtils.parseTable(series[3].data, keyDateResult, key, maxTabMemory);
       let newSeries = JSON.parse(JSON.stringify(series));
       newSeries[0].data = usedTab;
       newSeries[1].data = buffTab;
@@ -155,7 +158,7 @@ class MemoryChart extends React.Component {
       this.setState({
         series: newSeries
       });
-      let newFullDate = MainChart.parseTable(fullDate, keyDateResult, key);
+      let newFullDate = ChartUtils.parseTable(fullDate, keyDateResult, key, maxTabMemory);
       let newCategories = JSON.parse(JSON.stringify(options));
       newCategories.xaxis.categories = newFullDate;
 

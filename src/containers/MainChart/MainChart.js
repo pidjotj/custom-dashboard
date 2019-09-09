@@ -8,6 +8,8 @@ import VariableDropDown from '../../components/VariableDropDown';
 import AverageValues from '../../components/AverageValues';
 import ButtonChartType from "../../components/ButtonChartType";
 import ChartTitle from "../../components/ChartTitle";
+import { chartWidth, maxTabGlobal } from "../../utils/Constants";
+import { ChartUtils } from "../../utils/ChartUtils";
 
 class MainChart extends React.Component {
   constructor(props) {
@@ -26,7 +28,7 @@ class MainChart extends React.Component {
       chartType: 'line',
       options: {
         chart: {
-          id: 'basic-bar',
+          id: 'global-chart',
         },
         xaxis: {
           categories: [],
@@ -76,17 +78,18 @@ class MainChart extends React.Component {
           fullDate.push(metrics.time);
         });
         if (currentVariable !== '') {
-          let newTab = MainChart.parseTable(tempVariableData, key, keyDateResultEnd);
+          let newTab = ChartUtils.parseTable(tempVariableData, key, keyDateResultEnd, maxTabGlobal);
           let newSeries = JSON.parse(JSON.stringify(this.state.series));
           newSeries[0].data = newTab;
           newSeries[0].name = currentVariable;
           this.setState({
             series: newSeries
           }, () => {
-            this.getValues(newTab);
+            let tempAverage = ChartUtils.getValues(newTab);
+            this.setState({ averageTab: tempAverage })
           })
         }
-        let newFullDate = MainChart.parseTable(fullDate, key, keyDateResultEnd);
+        let newFullDate = ChartUtils.parseTable(fullDate, key, keyDateResultEnd, maxTabGlobal);
         let newCategories = JSON.parse(JSON.stringify(this.state.options));
         newCategories.xaxis.categories = newFullDate;
         this.setState({
@@ -105,17 +108,18 @@ class MainChart extends React.Component {
         fullDate.push(metrics.time);
       });
       if (currentVariable !== '') {
-        let newTab = MainChart.parseTable(tempVariableData, keyDateResult, key);
+        let newTab = ChartUtils.parseTable(tempVariableData, keyDateResult, key, maxTabGlobal);
         let newSeries = JSON.parse(JSON.stringify(this.state.series));
         newSeries[0].data = newTab;
         newSeries[0].name = currentVariable;
         this.setState({
           series: newSeries
         }, () => {
-          this.getValues(newTab);
+          let tempAverage = ChartUtils.getValues(newTab);
+          this.setState({ averageTab: tempAverage })
         })
       }
-      let newFullDate = MainChart.parseTable(fullDate, keyDateResult, key);
+      let newFullDate = ChartUtils.parseTable(fullDate, keyDateResult, key, maxTabGlobal);
       let newCategories = JSON.parse(JSON.stringify(this.state.options));
       newCategories.xaxis.categories = newFullDate;
       this.setState({
@@ -135,7 +139,7 @@ class MainChart extends React.Component {
       });
       this.setState({ tempVariableData: temp }, () => {
         const { tempVariableData, keyDateResult, keyDateResultEnd } = this.state;
-        let newTab = MainChart.parseTable(tempVariableData, keyDateResult, keyDateResultEnd);
+        let newTab = ChartUtils.parseTable(tempVariableData, keyDateResult, keyDateResultEnd, maxTabGlobal);
         let newSeries = JSON.parse(JSON.stringify(this.state.series));
         newSeries[0].data = newTab;
         newSeries[0].name = nameVar;
@@ -146,11 +150,12 @@ class MainChart extends React.Component {
           metricsFile.map( (metrics) => {
             fullDate.push(metrics.time);
           });
-          let newFullDate = MainChart.parseTable(fullDate, keyDateResult, keyDateResultEnd);
+          let newFullDate = ChartUtils.parseTable(fullDate, keyDateResult, keyDateResultEnd, maxTabGlobal);
           let newCategories = JSON.parse(JSON.stringify(this.state.options));
           newCategories.xaxis.categories = newFullDate;
           if (!fromMain) {
-            this.getValues(temp);
+            let tempAverage = ChartUtils.getValues(newTab);
+            this.setState({ averageTab: tempAverage })
           }
           this.setState({
               options: newCategories
@@ -166,45 +171,6 @@ class MainChart extends React.Component {
       this.receiveCallbackVariable(this.state.currentVariable, true)
     });
   }
-
-  getValues(tab) {
-    let result = [];
-
-    result.push(Math.max.apply(Math, tab));
-    result.push(Math.min.apply(Math, tab));
-    const sum = tab.reduce(function(a,b) { return a + b});
-    const average = sum / tab.length;
-    result.push(average);
-    this.setState({ averageTab: result });
-  }
-
-  static parseTable(oldTab, keyFrom, keyTo = null) {
-
-    let oldTabTemp = [];
-
-    if (keyFrom !== -1 && keyTo === -1) {
-      oldTabTemp = oldTab.slice(keyFrom);
-    } else if (keyFrom !== -1 && keyTo !== -1) {
-      // Have to add 2 because of the table modification in Dropdown.
-      oldTabTemp = oldTab.slice(keyFrom, keyTo + keyFrom + 2);
-    } else {
-      oldTabTemp = oldTab;
-    }
-    let newTab = [];
-
-    if (oldTabTemp.length > 20) {
-      const maxVal = 20;
-      const delta = Math.floor(oldTabTemp.length / maxVal);
-
-      for (let i = 0; i < oldTabTemp.length; i += delta) {
-        newTab.push(oldTabTemp[i]);
-      }
-      return newTab;
-    }
-
-    return oldTabTemp;
-  }
-
 
   render() {
     const {
@@ -240,7 +206,7 @@ class MainChart extends React.Component {
               options={options}
               series={series}
               type={chartType}
-              width='1000'
+              width={chartWidth}
             />
           </div>
         </div>
