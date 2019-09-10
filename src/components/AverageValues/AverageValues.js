@@ -18,7 +18,7 @@ class AverageValues extends React.Component {
 }
 
 AverageValues.propTypes = {
-  tab: PropTypes.array
+  tab: PropTypes.array.isRequired
 };
 
 export default AverageValues;

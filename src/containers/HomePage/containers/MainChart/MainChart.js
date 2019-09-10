@@ -1,15 +1,15 @@
 import React from 'react';
-import '../HomePage/styles/index.css';
+import '../../styles/index.css';
 import { connect } from 'react-redux';
 import Chart from 'react-apexcharts';
 import { ButtonGroup } from 'reactstrap';
-import DateDropDown from '../../components/DateDropDown';
-import VariableDropDown from '../../components/VariableDropDown';
-import AverageValues from '../../components/AverageValues';
-import ButtonChartType from "../../components/ButtonChartType";
-import ChartTitle from "../../components/ChartTitle";
-import { chartWidth, maxTabGlobal } from "../../utils/Constants";
-import { ChartUtils } from "../../utils/ChartUtils";
+import DateDropDown from '../../../../components/DateDropDown';
+import VariableDropDown from '../../../../components/VariableDropDown';
+import AverageValues from '../../../../components/AverageValues';
+import ButtonChartType from "../../../../components/ButtonChartType";
+import ChartTitle from "../../../../components/ChartTitle";
+import { chartWidth, maxTabGlobal } from "../../../../utils/Constants";
+import { ChartUtils } from "../../../../utils/ChartUtils";
 
 class MainChart extends React.Component {
   constructor(props) {

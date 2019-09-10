@@ -1,10 +1,13 @@
 export class ChartUtils {
 
-  static getValues(tab) {
+  static getValues(tab, onlyAverage) {
     let result = [];
 
-    result.push(Math.max.apply(Math, tab));
-    result.push(Math.min.apply(Math, tab));
+    console.log("onlyAv", onlyAverage);
+    if (onlyAverage !== false) {
+      result.push(Math.max.apply(Math, tab));
+      result.push(Math.min.apply(Math, tab));
+    }
     const sum = tab.reduce(function(a,b) { return a + b});
     const average = sum / tab.length;
     result.push(average);
@@ -16,6 +19,7 @@ export class ChartUtils {
     let oldTabTemp = [];
 
     if (keyFrom !== -1 && keyTo === -1) {
+      console.log("parse HERE", max);
       oldTabTemp = oldTab.slice(keyFrom);
     } else if (keyFrom !== -1 && keyTo !== -1) {
       // Have to add 2 because of the table modification in Dropdown.

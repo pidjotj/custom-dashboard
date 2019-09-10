@@ -1,11 +1,12 @@
 import React from "react";
 import { connect } from 'react-redux';
-import ChartTitle from "../../components/ChartTitle";
+import ChartTitle from "../../../../components/ChartTitle";
 import Chart from "react-apexcharts";
 import { ButtonGroup  } from "reactstrap";
-import DateDropDown from "../../components/DateDropDown/DateDropDown";
-import { maxTabMemory } from "../../utils/Constants";
-import { ChartUtils } from "../../utils/ChartUtils";
+import DateDropDown from "../../../../components/DateDropDown/DateDropDown";
+import { maxTabMemory } from "../../../../utils/Constants";
+import { ChartUtils } from "../../../../utils/ChartUtils";
+import TopMemoryUsage from "../../../../components/TopMemoryUsage";
 
 class MemoryChart extends React.Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class MemoryChart extends React.Component {
             colors: ['#FFFFFF', '#E91E63', '#9C27B0']
           }
         },
-        colors: ['#FF1654', '#247BA0', '#9C27B0', '#673245'],
+        colors: ['#FF1654', '#247BA0', '#9C27B0', '#ff7b5c'],
         tooltip: {
           theme: 'dark',
         }
@@ -70,25 +71,36 @@ class MemoryChart extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.metricsFile !== undefined && this.props.metricsFile !== prevProps.metricsFile) {
-      this.getMemoryInfosFromMetrics();
+      this.initChart();
     }
   }
 
-  getMemoryInfosFromMetrics() {
+  // TODO refactor every callback method...
+
+  getAverageValues(used, buff, cach, free) {
+    let averageValues = [];
+    averageValues.push(ChartUtils.getValues(used, false));
+    averageValues.push(ChartUtils.getValues(buff, false));
+    averageValues.push(ChartUtils.getValues(cach, false));
+    averageValues.push(ChartUtils.getValues(free, false));
+    this.setState({ averageTab: averageValues });
+  }
+
+  getInfosFromMetrics() {
     const { metricsFile } = this.props;
-    const { series, keyDateResult, keyDateResultEnd, options } = this.state;
+    const { series, keyDateResult, keyDateResultEnd } = this.state;
+
     const varName = ['used', 'buff', 'cach', 'free'];
     let usedTab = [];
     let buffTab = [];
     let cachTab = [];
     let freeTab = [];
-    let timeTab = [];
+
     metricsFile.map( (metrics) => {
       usedTab.push(metrics[varName[0]]);
       buffTab.push(metrics[varName[1]]);
       cachTab.push(metrics[varName[2]]);
       freeTab.push(metrics[varName[3]]);
-      timeTab.push(metrics.time);
     });
     let newSeries = JSON.parse(JSON.stringify(series));
     newSeries[0].data = ChartUtils.parseTable(usedTab, keyDateResult, keyDateResultEnd, maxTabMemory);
@@ -99,76 +111,42 @@ class MemoryChart extends React.Component {
     newSeries[2].name = varName[2];
     newSeries[3].data = ChartUtils.parseTable(freeTab, keyDateResult, keyDateResultEnd, maxTabMemory);
     newSeries[3].name = varName[3];
+    this.getAverageValues(newSeries[0].data, newSeries[1].data, newSeries[2].data, newSeries[3].data);
     this.setState({ series: newSeries });
+  };
+
+  getTimeFromMetrics() {
+    const { metricsFile } = this.props;
+    const { keyDateResult, keyDateResultEnd, options } = this.state;
+    let timeTab = [];
+    metricsFile.map( (metrics) => {
+      timeTab.push(metrics.time);
+    });
+
     let newFullDate = ChartUtils.parseTable(timeTab, keyDateResult, keyDateResultEnd, maxTabMemory);
+    console.log("newFullDate in Init", newFullDate);
     let newCategories = JSON.parse(JSON.stringify(options));
     newCategories.xaxis.categories = newFullDate;
+    this.setState({ options: newCategories })
+  }
+
+  initChart() {
+    this.getInfosFromMetrics();
+    this.getTimeFromMetrics();
   };
 
   receiveCallbackFrom(key) {
     console.log("callBack from");
-    const { keyDateResultEnd, series, options } = this.state;
-    const { metricsFile } = this.props;
     this.setState({ keyDateResult: key }, () => {
-      const fullDate = [];
-      metricsFile.map( (metrics) => {
-        fullDate.push(metrics.time);
+        this.initChart();
       });
-      let usedTab = ChartUtils.parseTable(series[0].data, key, keyDateResultEnd);
-      let buffTab = ChartUtils.parseTable(series[1].data, key, keyDateResultEnd);
-      let cachTab = ChartUtils.parseTable(series[2].data, key, keyDateResultEnd);
-      let freeTab = ChartUtils.parseTable(series[3].data, key, keyDateResultEnd);
-      let newSeries = JSON.parse(JSON.stringify(series));
-      newSeries[0].data = usedTab;
-      newSeries[1].data = buffTab;
-      newSeries[2].data = cachTab;
-      newSeries[3].data = freeTab;
-      this.setState({
-        series: newSeries
-      });
-      let newFullDate = ChartUtils.parseTable(fullDate, key, keyDateResultEnd);
-      let newCategories = JSON.parse(JSON.stringify(options));
-      newCategories.xaxis.categories = newFullDate;
-      this.setState({
-          options: newCategories
-        }
-      )
-    });
   }
 
   receiveCallbackTo(key) {
     console.log("callBack to");
-    const { keyDateResult, series, options } = this.state;
-    const { metricsFile } = this.props;
     this.setState({ keyDateResultEnd: key }, () =>{
-      const fullDate = [];
-      metricsFile.map( (metrics) => {
-        fullDate.push(metrics.time);
+        this.initChart();
       });
-      let usedTab = ChartUtils.parseTable(series[0].data, keyDateResult, key, maxTabMemory);
-      let buffTab = ChartUtils.parseTable(series[1].data, keyDateResult, key, maxTabMemory);
-      let cachTab = ChartUtils.parseTable(series[2].data, keyDateResult, key, maxTabMemory);
-      let freeTab = ChartUtils.parseTable(series[3].data, keyDateResult, key, maxTabMemory);
-      let newSeries = JSON.parse(JSON.stringify(series));
-      newSeries[0].data = usedTab;
-      newSeries[1].data = buffTab;
-      newSeries[2].data = cachTab;
-      newSeries[3].data = freeTab;
-      console.log("usedTab", usedTab);
-      this.setState({
-        series: newSeries
-      });
-      let newFullDate = ChartUtils.parseTable(fullDate, keyDateResult, key, maxTabMemory);
-      let newCategories = JSON.parse(JSON.stringify(options));
-      newCategories.xaxis.categories = newFullDate;
-
-      console.log("newCategories", newFullDate);
-      this.setState({
-          options: newCategories
-        }, () => {
-        console.log("options", options.xaxis)
-      })
-    })
   }
 
   render() {
@@ -206,9 +184,10 @@ class MemoryChart extends React.Component {
             />
           </div>
         </div>
-        {/*<div className="column-div">*/}
-        {/*  <AverageValues tab={averageTab}/>*/}
-        {/*</div>*/}
+        <div className="column-div">
+          {/*<AverageValues tab={averageTab}/>*/}
+          <TopMemoryUsage valuesTab={averageTab} />
+        </div>
       </div>
     );
   }

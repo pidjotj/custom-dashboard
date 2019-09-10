@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getInfosFromJSON } from "./store/actions/home.action";
 
-import MainChart  from '../MainChart';
+import MainChart  from './containers/MainChart';
 import Header from "../../components/Header";
-import MemoryChart from "../MemoryChart";
+import MemoryChart from "./containers/MemoryChart";
 
 class HomePage extends React.Component {
 

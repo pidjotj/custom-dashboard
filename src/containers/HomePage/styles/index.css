@@ -38,6 +38,11 @@
     flex-direction: column;
 }
 
+
+.normal-text {
+    color: #FFFFFF;
+}
+
 .high-value {
     font-family: Quicksand, sans-serif;
     margin-top: 10px;
@@ -57,6 +62,36 @@
     margin-top: 10px;
     font-size: medium;
     color: #FF4162;
+}
+
+/*TopValues*/
+
+.used-average {
+    font-family: Quicksand, sans-serif;
+    margin-top: 10px;
+    font-size: medium;
+    color: #FF1654;
+}
+
+.buff-average {
+    font-family: Quicksand, sans-serif;
+    margin-top: 10px;
+    font-size: medium;
+    color: #247BA0;
+}
+
+.cach-average {
+    font-family: Quicksand, sans-serif;
+    margin-top: 10px;
+    font-size: medium;
+    color: #9C27B0;
+}
+
+.free-average {
+    font-family: Quicksand, sans-serif;
+    margin-top: 10px;
+    font-size: medium;
+    color: #FF7B5C;
 }
 
 
