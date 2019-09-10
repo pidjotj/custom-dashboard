@@ -1,14 +1,15 @@
 import React from "react";
 import { connect } from 'react-redux';
-import ChartTitle from "../../../../components/ChartTitle";
-import Chart from "react-apexcharts";
-import { ButtonGroup  } from "reactstrap";
-import DateDropDown from "../../../../components/DateDropDown/DateDropDown";
-import { maxTabMemory } from "../../../../utils/Constants";
 import { ChartUtils } from "../../../../utils/ChartUtils";
+import { maxTabMemory } from "../../../../utils/Constants";
+import ChartTitle from "../../../../components/ChartTitle";
+import { ButtonGroup } from "reactstrap";
+import DateDropDown from "../../../../components/DateDropDown/DateDropDown";
+import Chart from "react-apexcharts";
 import TopMemoryUsage from "../../../../components/TopMemoryUsage";
+import TopCpuUsage from "../../../../components/TopCpuUsage";
 
-class MemoryChart extends React.Component {
+class CpuChart extends React.Component {
   constructor(props) {
     super(props);
 
@@ -43,12 +44,20 @@ class MemoryChart extends React.Component {
             colors: ['#FFFFFF', '#E91E63', '#9C27B0']
           }
         },
-        colors: ['#FF1654', '#247BA0', '#9C27B0', '#ff7b5c'],
+        colors: ['#FF1654', '#247BA0', '#9C27B0', '#ff7b5C', '#66CC33', '#FFD700'],
         tooltip: {
           theme: 'dark',
         }
       },
       series: [
+        {
+          name: '',
+          data: [],
+        },
+        {
+          name: '',
+          data: []
+        },
         {
           name: '',
           data: []
@@ -76,8 +85,6 @@ class MemoryChart extends React.Component {
     }
   }
 
-  // TODO refactor every callback method...
-
   initChart() {
     this.getInfosFromMetrics();
     this.getTimeFromMetrics();
@@ -87,27 +94,36 @@ class MemoryChart extends React.Component {
     const { metricsFile } = this.props;
     const { series, keyDateResult, keyDateResultEnd } = this.state;
 
-    const varName = ['used', 'buff', 'cach', 'free'];
-    let usedTab = [];
-    let buffTab = [];
-    let cachTab = [];
-    let freeTab = [];
+    const varName = ['usr', 'sys', 'idl', 'wai', 'hiq', 'siq'];
+    let usrTab = [];
+    let sysTab = [];
+    let idlTab = [];
+    let waiTab = [];
+    let hiqTab = [];
+    let siqTab = [];
 
     metricsFile.map( (metrics) => {
-      usedTab.push(metrics[varName[0]]);
-      buffTab.push(metrics[varName[1]]);
-      cachTab.push(metrics[varName[2]]);
-      freeTab.push(metrics[varName[3]]);
+      usrTab.push(metrics[varName[0]]);
+      sysTab.push(metrics[varName[1]]);
+      idlTab.push(metrics[varName[2]]);
+      waiTab.push(metrics[varName[3]]);
+      hiqTab.push(metrics[varName[4]]);
+      siqTab.push(metrics[varName[5]]);
     });
     let newSeries = JSON.parse(JSON.stringify(series));
-    newSeries[0].data = ChartUtils.parseTable(usedTab, keyDateResult, keyDateResultEnd, maxTabMemory);
+    newSeries[0].data = ChartUtils.parseTable(usrTab, keyDateResult, keyDateResultEnd, maxTabMemory);
     newSeries[0].name = (varName[0]);
-    newSeries[1].data = ChartUtils.parseTable(buffTab, keyDateResult, keyDateResultEnd, maxTabMemory);
+    newSeries[1].data = ChartUtils.parseTable(sysTab, keyDateResult, keyDateResultEnd, maxTabMemory);
     newSeries[1].name = varName[1];
-    newSeries[2].data = ChartUtils.parseTable(cachTab, keyDateResult, keyDateResultEnd, maxTabMemory);
+    newSeries[2].data = ChartUtils.parseTable(idlTab, keyDateResult, keyDateResultEnd, maxTabMemory);
     newSeries[2].name = varName[2];
-    newSeries[3].data = ChartUtils.parseTable(freeTab, keyDateResult, keyDateResultEnd, maxTabMemory);
+    newSeries[3].data = ChartUtils.parseTable(waiTab, keyDateResult, keyDateResultEnd, maxTabMemory);
     newSeries[3].name = varName[3];
+    newSeries[4].data = ChartUtils.parseTable(hiqTab, keyDateResult, keyDateResultEnd, maxTabMemory);
+    newSeries[4].name = varName[4];
+    newSeries[5].data = ChartUtils.parseTable(siqTab, keyDateResult, keyDateResultEnd, maxTabMemory);
+    newSeries[5].name = varName[5];
+    //this.getAverageValues(newSeries[0].data, newSeries[1].data, newSeries[2].data, newSeries[3].data);
     let tempAverageTab = ChartUtils.getAverageValues(newSeries);
     this.setState({ averageTab: tempAverageTab });
     this.setState({ series: newSeries });
@@ -130,15 +146,15 @@ class MemoryChart extends React.Component {
   receiveCallbackFrom(key) {
     console.log("callBack from");
     this.setState({ keyDateResult: key }, () => {
-        this.initChart();
-      });
+      this.initChart();
+    });
   }
 
   receiveCallbackTo(key) {
     console.log("callBack to");
     this.setState({ keyDateResultEnd: key }, () =>{
-        this.initChart();
-      });
+      this.initChart();
+    });
   }
 
   render() {
@@ -152,7 +168,7 @@ class MemoryChart extends React.Component {
     return (
       <div className="main-div">
         <div>
-          <ChartTitle title='Memory Usage Chart (used - buff - cach - free)' />
+          <ChartTitle title='CPU Usage Chart (usr - sys - idl - wai - hiq - siq)' />
           <div className='chart-div'>
             <div className="dropdown-outside-global">
               <ButtonGroup>
@@ -177,7 +193,7 @@ class MemoryChart extends React.Component {
           </div>
         </div>
         <div className="column-div">
-          <TopMemoryUsage valuesTab={averageTab} />
+          <TopCpuUsage valuesTab={averageTab} />
         </div>
       </div>
     );
@@ -190,4 +206,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(MemoryChart);
+export default connect(mapStateToProps, null)(CpuChart);

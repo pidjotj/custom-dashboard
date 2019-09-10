@@ -66,32 +66,46 @@
 
 /*TopValues*/
 
-.used-average {
+.first-average {
     font-family: Quicksand, sans-serif;
     margin-top: 10px;
     font-size: medium;
     color: #FF1654;
 }
 
-.buff-average {
+.second-average {
     font-family: Quicksand, sans-serif;
     margin-top: 10px;
     font-size: medium;
     color: #247BA0;
 }
 
-.cach-average {
+.third-average {
     font-family: Quicksand, sans-serif;
     margin-top: 10px;
     font-size: medium;
     color: #9C27B0;
 }
 
-.free-average {
+.fourth-average {
     font-family: Quicksand, sans-serif;
     margin-top: 10px;
     font-size: medium;
     color: #FF7B5C;
+}
+
+.fifth-average {
+    font-family: Quicksand, sans-serif;
+    margin-top: 10px;
+    font-size: medium;
+    color: #66cc33;
+}
+
+.sixth-average {
+    font-family: Quicksand, sans-serif;
+    margin-top: 10px;
+    font-size: medium;
+    color: #ffd700;
 }
 
 

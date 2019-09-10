@@ -8,10 +8,10 @@ class TopMemoryUsage extends React.Component {
     console.log("values", valuesTab);
     return (
       <div className="column-div">
-        <span className="used-average">used average: {<span className="normal-text">{ChartUtils.formatBytes(valuesTab[0])}</span>}</span>
-        <span className="buff-average">buff average: {<span className="normal-text">{ChartUtils.formatBytes(valuesTab[1])}</span>}</span>
-        <span className="cach-average">cach average: {<span className="normal-text">{ChartUtils.formatBytes(valuesTab[2])}</span>}</span>
-        <span className="free-average">free average: {<span className="normal-text">{ChartUtils.formatBytes(valuesTab[3])}</span>}</span>
+        <span className="first-average">used average: {<span className="normal-text">{ChartUtils.formatBytes(valuesTab[0])}</span>}</span>
+        <span className="second-average">buff average: {<span className="normal-text">{ChartUtils.formatBytes(valuesTab[1])}</span>}</span>
+        <span className="third-average">cach average: {<span className="normal-text">{ChartUtils.formatBytes(valuesTab[2])}</span>}</span>
+        <span className="fourth-average">free average: {<span className="normal-text">{ChartUtils.formatBytes(valuesTab[3])}</span>}</span>
       </div>
     );
   }

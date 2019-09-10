@@ -6,6 +6,7 @@ import { getInfosFromJSON } from "./store/actions/home.action";
 import MainChart  from './containers/MainChart';
 import Header from "../../components/Header";
 import MemoryChart from "./containers/MemoryChart";
+import CpuChart from "./containers/CPUChart";
 
 class HomePage extends React.Component {
 
@@ -21,6 +22,7 @@ class HomePage extends React.Component {
         <Header />
         <MainChart />
         <MemoryChart />
+        <CpuChart />
       </div>
     );
   }

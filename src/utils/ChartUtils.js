@@ -1,5 +1,13 @@
 export class ChartUtils {
 
+  static   getAverageValues(tab) {
+    let averageValues = [];
+    tab.map((elem) => {
+      averageValues.push(ChartUtils.getValues(elem['data'], false));
+    });
+    return averageValues;
+  }
+  
   static formatBytes(bytes, decimals = 2) {
     if (bytes === 0) return '0 Bytes';
 
@@ -12,11 +20,11 @@ export class ChartUtils {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
-  static getValues(tab, onlyAverage) {
+  static getValues(tab, maxmin) {
     let result = [];
 
-    console.log("onlyAv", onlyAverage);
-    if (onlyAverage !== false) {
+    console.log("onlyAv", maxmin);
+    if (maxmin !== false) {
       result.push(Math.max.apply(Math, tab));
       result.push(Math.min.apply(Math, tab));
     }
